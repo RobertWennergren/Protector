@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 public class InventoryScreen implements Screen {
 
@@ -24,6 +25,13 @@ public class InventoryScreen implements Screen {
 	Float MousePosX;
 	Float MousePosY;
 	
+	int row = 0;
+	int rowLength = 7;
+	int maxItems = 10;
+	
+	int[][] inventoryPos;
+	Item[] inventory;
+	
 	public InventoryScreen(final Drop gam){
 		game = gam;
 		camera = new OrthographicCamera();
@@ -31,6 +39,9 @@ public class InventoryScreen implements Screen {
 		
 		Inventory =  new Texture(Gdx.files.internal("inventory.png"));
 		InventoryMark =  new Texture(Gdx.files.internal("inventoryMark.png"));
+		
+		inventoryPos = new int[row][rowLength]; // 0,0 = 250, 258
+		inventory = new Item[maxItems];
 	}
 	
 	
@@ -56,14 +67,42 @@ public class InventoryScreen implements Screen {
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 			camera.unproject(touchPos);
 			MousePosX = touchPos.x;
-			MousePosY = touchPos.y;			
+			MousePosY = touchPos.y;		
+			
+			if((MousePosX >= (float) 232 && MousePosX <= 261)
+					&& (MousePosY >= 241 && MousePosY <= 273)){
+				
+				game.font.draw(game.batch, "Position 0.0 at X: 232, Y: 241", 100, 85);
+				
+			}
 			
 			game.font.draw(game.batch, MousePosX.toString() + " "
 			+ MousePosY.toString() , 100, 100);
+			
+			if(Gdx.input.isTouched() && (MousePosX >= (float) 232 && MousePosX <= 261)
+					&& (MousePosY >= 241 && MousePosY <= 273)){
+				
+				InventoryMarkX = (float) 232;
+				InventoryMarkY = (float) 241;
+				
+				inventory[0] = new Item();
+				
+			}
+			
+			
+			for(Item i : inventory ){
+				if(i == null)
+					continue;
+			game.batch.draw(i.getImage(), InventoryMarkX, InventoryMarkY);
+				
+			
+			}
 
-			InventoryMarkX = touchPos.x - 16;
-			InventoryMarkY = touchPos.y - 16;
-			game.batch.draw(InventoryMark, InventoryMarkX, InventoryMarkY);
+			//InventoryMarkX = touchPos.x - 16;
+			//InventoryMarkY = touchPos.y - 16;
+			
+			
+			//game.batch.draw(InventoryMark, InventoryMarkX, InventoryMarkY);
 		//}
 		
 		game.batch.end();
